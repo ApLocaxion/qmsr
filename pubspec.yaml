@@ -56,6 +56,17 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: SFPro
+      fonts:
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Regular.otf
+        - asset: assets/fonts/SFPro/SF-Pro-Text-Bold.otf
+          weight: 700
+        - asset: assets/fonts/SFPro/SF-Pro-Rounded-Medium.otf
+          weight: 500
+    - family: SFProDisplay
+      fonts:
+        - asset: assets/fonts/SFPro/SF-Pro-Display-Regular.otf
 
   # To add assets to your application, add an assets section, like this:
   # assets:

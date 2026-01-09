@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'core/theme/theme.dart';
+
 void main() {
   runApp(const QmsrApp());
 }
@@ -32,22 +34,11 @@ class QmsrApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = ColorScheme.fromSeed(seedColor: Colors.teal);
     return MaterialApp(
-      title: 'QMSR MVP Checklist',
+      title: 'QMSR  Checklist',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: colorScheme,
-        useMaterial3: true,
-        appBarTheme: AppBarTheme(
-          backgroundColor: colorScheme.surface,
-          foregroundColor: colorScheme.onSurface,
-        ),
-        inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.white,
-        ),
-      ),
+      theme: Themes().darkTheme,
+      themeMode: ThemeMode.dark,
       home: const ChecklistScreen(),
     );
   }
@@ -71,32 +62,47 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('QMSR MVP Checklist')),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.teal.shade50, Colors.blueGrey.shade50],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      appBar: AppBar(
+        title: Text(
+          'QMSR Checklist',
+          style: TextStyle(
+            color: textTheme.colorScheme.onSurface,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Icon(Icons.location_pin),
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(),
         child: SafeArea(
           child: ListView(
             padding: const EdgeInsets.all(16),
             children: [
               Text(
                 'High-level checklist categories (MVP scope)',
-                style: textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: TextStyle(
+                  color: textTheme.colorScheme.onSurface,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Each check supports Yes / No / N/A plus notes for evidence, '
                 'links, or follow-up actions.',
-                style: textTheme.bodyMedium,
+                style: TextStyle(
+                  color: textTheme.colorScheme.onSurface,
+                  // fontSize: 14,
+                  // fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 16),
               _buildLegend(),
@@ -114,38 +120,46 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
   }
 
   Widget _buildLegend() {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(2), // 👉 gradient border thickness
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: const LinearGradient(colors: [Colors.purple, Colors.amber]),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.teal.shade100),
       ),
-      child: Row(
-        children: [
-          _statusChip(ChecklistStatus.yes),
-          const SizedBox(width: 8),
-          _statusChip(ChecklistStatus.no),
-          const SizedBox(width: 8),
-          _statusChip(ChecklistStatus.na),
-          const SizedBox(width: 8),
-          _statusChip(ChecklistStatus.unset),
-        ],
+      child: Container(
+        padding: const EdgeInsets.all(12), // 👉 original inner padding
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(10), // radius - border thickness
+        ),
+        child: Row(
+          children: [
+            _statusChip(ChecklistStatus.yes),
+            const SizedBox(width: 8),
+            _statusChip(ChecklistStatus.no),
+            const SizedBox(width: 8),
+            _statusChip(ChecklistStatus.na),
+            const SizedBox(width: 8),
+            _statusChip(ChecklistStatus.unset),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildCategoryTile(ChecklistCategory category) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blueGrey.shade100),
+        border: Border.all(color: colorScheme.outline),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
+            color: Color(0x33000000),
+            blurRadius: 18,
+            offset: Offset(0, 10),
           ),
         ],
       ),
@@ -163,19 +177,26 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
   }
 
   Widget _buildItemCard(ChecklistItem item) {
+    final colorScheme = Theme.of(context).colorScheme;
     final state = _stateFor(item.id);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.blueGrey.shade50,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blueGrey.shade100),
+        border: Border.all(color: colorScheme.outline),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.text, style: const TextStyle(fontWeight: FontWeight.w600)),
+          Text(
+            item.text,
+            style: const TextStyle(
+              color: Color.fromARGB(255, 242, 141, 58),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 8),
           Wrap(
             spacing: 12,
@@ -187,19 +208,22 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                 items: const [
                   DropdownMenuItem(
                     value: ChecklistStatus.unset,
-                    child: Text('Select'),
+                    child: Text(
+                      'Select',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   DropdownMenuItem(
                     value: ChecklistStatus.yes,
-                    child: Text('Yes'),
+                    child: Text('Yes', style: TextStyle(color: Colors.white)),
                   ),
                   DropdownMenuItem(
                     value: ChecklistStatus.no,
-                    child: Text('No'),
+                    child: Text('No', style: TextStyle(color: Colors.white)),
                   ),
                   DropdownMenuItem(
                     value: ChecklistStatus.na,
-                    child: Text('N/A'),
+                    child: Text('N/A', style: TextStyle(color: Colors.white)),
                   ),
                 ],
                 onChanged: (value) {
@@ -221,8 +245,17 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
               labelText: 'Notes',
               hintText: 'Evidence, references, or follow-up actions',
               border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Colors.black),
               isDense: true,
+              fillColor: Colors.white,
+              floatingLabelAlignment: FloatingLabelAlignment.start,
+              floatingLabelStyle: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+              filled: true,
             ),
+
             maxLines: 2,
           ),
         ],
@@ -231,18 +264,19 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
   }
 
   Widget _buildTechStackCard() {
+    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surfaceVariant,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.teal.shade100),
+        border: Border.all(color: colorScheme.outline),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x11000000),
-            blurRadius: 10,
-            offset: Offset(0, 4),
+            color: Color(0x33000000),
+            blurRadius: 18,
+            offset: Offset(0, 10),
           ),
         ],
       ),
@@ -278,29 +312,24 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
   }
 
   Widget _statusChip(ChecklistStatus status) {
-    Color color;
     String label;
     switch (status) {
       case ChecklistStatus.yes:
-        color = Colors.green.shade600;
         label = 'Yes';
         break;
       case ChecklistStatus.no:
-        color = Colors.red.shade600;
         label = 'No';
         break;
       case ChecklistStatus.na:
-        color = Colors.orange.shade600;
         label = 'N/A';
         break;
       case ChecklistStatus.unset:
-        color = Colors.grey.shade600;
         label = 'Unset';
         break;
     }
     return Chip(
       label: Text(label, style: const TextStyle(color: Colors.white)),
-      backgroundColor: color,
+      backgroundColor: Colors.black,
       padding: const EdgeInsets.symmetric(horizontal: 8),
     );
   }
