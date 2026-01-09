@@ -69,14 +69,15 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
           'QMSR Checklist',
           style: TextStyle(
             color: textTheme.colorScheme.onSurface,
-            fontSize: 32,
+            fontSize: 36,
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Icon(Icons.location_pin),
+          Image.asset(
+            'assets/LoaXion-logo-old.png',
+            height: 88,
+            // fit: BoxFit.contain,
           ),
         ],
       ),
